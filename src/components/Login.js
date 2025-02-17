@@ -9,9 +9,22 @@ export const Login = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
+    const navigate = useNavigate();
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+
+        setLoading(true);
+
+        setTimeout(() => {
+            setLoading(false);
+            navigate("/Home");
+        }, 2000);
+    }
+
     return (
       <div className="auth-wrapper">
-        <form className="auth-form">
+        <form onSubmit={handleSubmit} className="auth-form">
           <h1 className="auth-title">Sign In</h1>
   
           <div className="auth-fields">
