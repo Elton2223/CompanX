@@ -1,6 +1,6 @@
 import "./Form.css"
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { data, useNavigate } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 
 export const Register = () => {
@@ -9,8 +9,38 @@ export const Register = () => {
     const [firstName, setFirstName] = useState("");
     const [surname, setSurname] = useState("");
     const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
     const [department, setDepartment] = useState("");
+    const [password, setPassword] = useState("");
+
+    const navigate = useNavigate();
+
+    const registerUser = () => {
+      const dept = department; 
+
+      console.log("First Name : " + firstName + " Surname : "+ surname + " email: " + email + " Password: " + password);
+
+      fetch(`http://localhost:8000/User/Register`, {
+            method: "post", 
+            headers: {
+              'Content-Type': 'application/json'
+            }, 
+            body:JSON.stringify({
+              firstName, 
+              surname, 
+              email, 
+              dept,
+              password
+            })
+      })
+      .then(res => res.json())
+      .then(data => { 
+        setTimeout(() => {
+          setLoading(false);
+          navigate("/Login");
+      }, 2000);
+      })
+
+    }
   
     return (
       <div className="signup-container">
