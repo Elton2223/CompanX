@@ -8,10 +8,32 @@ export const Login = () => {
     const [loading, setLoading] = useState(false);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [token, setToken] = useCookies(["myToken"]);
+
+    const navigate = useNavigate();
+   /* useEffect( ()=>{
+        if(token["myToken"]){
+            setTimeout(() => {
+                setLoading(false);
+                navigate("/Home");
+            }, 2000);
+        }
+      }, [token]) */
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+
+        setLoading(true);
+
+        setTimeout(() => {
+            setLoading(false);
+            navigate("/Home");
+        }, 2000);
+    }
 
     return (
       <div className="auth-wrapper">
-        <form className="auth-form">
+        <form onSubmit={handleSubmit} className="auth-form">
           <h1 className="auth-title">Sign In</h1>
   
           <div className="auth-fields">
