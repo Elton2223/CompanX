@@ -34,18 +34,24 @@ export const Register = () => {
       })
       .then(res => res.json())
       .then(data => { 
-        setTimeout(() => {
-          setLoading(false);
           navigate("/Login");
-      }, 2000);
+      })
+      .catch(error => {
+        alert.alert("Error connecting to DB");
       })
 
     }
+
+    const handleSubmit = (e) => {
+      e.preventDefault(); 
+      setLoading(true);  
+      registerUser();  
+    };
   
     return (
       <div className="signup-container">
         {/* noValidate onSubmit={onSubmit}  */}
-        <form className="signup-form">
+        <form className="signup-form" onSubmit={handleSubmit}>
           <h1 className="form-title">Create Account</h1>
   
           <div className="form-fields">
