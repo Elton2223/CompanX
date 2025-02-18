@@ -24,6 +24,167 @@ export const Home = () => {
     due_date: "",
   });
 
+/*
+  const fetchTasks = useCallback(async () => {
+    setLoading(true);
+    try {
+      const response = await fetch("/api/list-tasks", {
+        method: "POST",
+        body: JSON.stringify({
+          status: statusFilter,
+          category: categoryFilter,
+          assignee: assigneeFilter,
+        }),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to fetch tasks");
+      }
+      const data = await response.json();
+      setTasks(data.tasks);
+    } catch (err) {
+      setError("Failed to load tasks");
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  }, [statusFilter, categoryFilter, assigneeFilter]);
+
+  useEffect(() => {
+    fetchTasks();
+    const interval = setInterval(fetchTasks, 60000);
+    const autoStopInterval = setInterval(async () => {
+      await fetch("/api/auto-stop-timers", { method: "POST" });
+      fetchTasks();
+    }, 60000);
+    return () => {
+      clearInterval(interval);
+      clearInterval(autoStopInterval);
+    };
+  }, [fetchTasks]);
+
+  const handleCreateTask = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      const response = await fetch("/api/create-task", {
+        method: "POST",
+        body: JSON.stringify({ ...newTask, created_by: currentUser?.id }),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to create task");
+      }
+      setSuccess("Task created successfully");
+      setNewTask({
+        task_ref: "",
+        short_desc: "",
+        category: "Project",
+        assignee: "",
+        time_spent: 0,
+        status: "unassigned",
+        due_date: "",
+      });
+      fetchTasks();
+    } catch (err) {
+      setError("Failed to create task");
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+  const handleStartTimer = async (taskId) => {
+    try {
+      const response = await fetch("/api/start-task-timer", {
+        method: "POST",
+        body: JSON.stringify({ taskId, userId: currentUser?.id }),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to start timer");
+      }
+      fetchTasks();
+    } catch (err) {
+      setError("Failed to start timer");
+      console.error(err);
+    }
+  };
+  const handleCloneTask = async (taskId) => {
+    try {
+      const response = await fetch("/api/clone-task", {
+        method: "POST",
+        body: JSON.stringify({ taskId, userId: currentUser?.id }),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to clone task");
+      }
+      setSuccess("Task cloned successfully");
+      fetchTasks();
+    } catch (err) {
+      setError("Failed to clone task");
+      console.error(err);
+    }
+  };
+  const handleAssignToMe = async (taskId) => {
+    try {
+      const response = await fetch("/api/update-task", {
+        method: "POST",
+        body: JSON.stringify({
+          id: taskId,
+          assignee: currentUser?.id,
+          status: "in-progress",
+        }),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to assign task");
+      }
+      setSuccess("Task assigned successfully");
+      fetchTasks();
+    } catch (err) {
+      setError("Failed to assign task");
+      console.error(err);
+    }
+  };
+  const handleUpdateTask = async (task) => {
+    if (task.assignee !== currentUser?.id) {
+      setError("You can only edit your own tasks");
+      return;
+    }
+    setLoading(true);
+    try {
+      const response = await fetch("/api/update-task", {
+        method: "POST",
+        body: JSON.stringify(task),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to update task");
+      }
+      setSuccess("Task updated successfully");
+      setEditingTask(null);
+      fetchTasks();
+    } catch (err) {
+      setError("Failed to update task");
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+  const handleDeleteTask = async (id) => {
+    setLoading(true);
+    try {
+      const response = await fetch("/api/delete-task", {
+        method: "POST",
+        body: JSON.stringify({ id }),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to delete task");
+      }
+      setSuccess("Task deleted successfully");
+      fetchTasks();
+    } catch (err) {
+      setError("Failed to delete task");
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };  */
 
   return (
     <div className="container">
@@ -31,7 +192,7 @@ export const Home = () => {
         <div className="header">
           <h1 className="title">Task Management System</h1>
           <button
-            onClick={() => (window.location.href = "/logout")}
+            onClick={() => (window.location.href = "/")}
             className="logout-button"
           >
             Logout
