@@ -10,6 +10,10 @@ export const Login = () => {
     const [password, setPassword] = useState("");
     const [token, setToken] = useCookies(["myToken"]);
     const [cookies, setCookie, removeCookie] = useCookies(["myToken"]);
+    const [sessionExpiry, setSessionExpiry] = useState(null);
+    const [timeLeft, setTimeLeft] = useState(null);
+    const [isReturningUser, setIsReturningUser] = useState(false);
+    const [cooldownRemaining, setCooldownRemaining] = useState(null);
 
     const navigate = useNavigate();
 
@@ -46,11 +50,76 @@ export const Login = () => {
 
         setLoading(true);
 
+        if (cooldownRemaining) {
+            setError(
+                `Please wait ${cooldownRemaining} hours before signing in again`,
+            );
+            setLoading(false);
+            return;
+        }
+
         setTimeout(() => {
             setLoading(false);
             loginUser();
         }, 2000);
     }
+
+    ///setting on session timer 
+    useEffect(() => {
+        if (sessionExpiry) {
+            const updateTimeLeft = () => {
+                const now = new Date();
+                const expiryTime = new Date(sessionExpiry);
+                const diff = expiryTime - now;
+                const hoursLeft = Math.max(0, Math.floor(diff / (1000 * 60 * 60)));
+                const minutesLeft = Math.max(
+                    0,
+                    Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)),
+                );
+                setTimeLeft(`${hoursLeft}h ${minutesLeft}m`);
+            };
+
+            updateTimeLeft();
+            const interval = setInterval(updateTimeLeft, 60000);
+
+            return () => clearInterval(interval);
+        }
+    }, [sessionExpiry]);
+
+    //check returning loging in user 
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            const previousLogins = JSON.parse(
+                localStorage.getItem("previousLogins") || "{}",
+            );
+            if (email && previousLogins[email]) {
+                const lastLogout = new Date(previousLogins[email].lastLogout || 0);
+                const now = new Date();
+                const hoursSinceLogout = (now - lastLogout) / (1000 * 60 * 60);
+
+                if (hoursSinceLogout < 8) {
+                    setCooldownRemaining(Math.ceil(8 - hoursSinceLogout));
+                    setIsReturningUser(true);
+                } else {
+                    setCooldownRemaining(null);
+                    setIsReturningUser(true);
+                }
+            } else {
+                setIsReturningUser(false);
+                setCooldownRemaining(null);
+            }
+        }
+    }, [email]);
+
+    const getCooldownMessage = () => {
+        if (!isReturningUser) {
+            return "Your session will remain active until you log out.";
+        }
+        if (cooldownRemaining) {
+            return `Please wait ${cooldownRemaining} hours before signing in again.`;
+        }
+        return "Welcome back! Your session will remain active until you log out.";
+    };
 
     return (
         <div className="auth-wrapper">
@@ -87,11 +156,20 @@ export const Login = () => {
                             />
                         </div>
                     </div>
+                    <div className="field-group">
+                        <p className="session-info">
+                            {getCooldownMessage()}
+                        </p>
+                    </div>
 
                     {error && <div className="error-message">{error}</div>}
 
                     <button type="submit" disabled={loading} className="auth-button">
-                        {loading ? "Loading..." : "Sign In"}
+                        {loading 
+                        ? "Loading..."
+                        :cooldownRemaining
+                        ? `Cooldown: ${cooldownRemaining}h remaining `
+                        : "Sign In"}
                     </button>
 
                     <p className="auth-link">

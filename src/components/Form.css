@@ -227,3 +227,18 @@
   .auth-link a:hover {
     color: #1D4ED8;
   }
+
+  .session-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: #6B7280;
+    padding: 0.5rem;
+    background-color: #F3F4F6;
+    border-radius: 0.5rem;
+  }
+
+  .session-info i {
+    color: #2563EB;
+  }
