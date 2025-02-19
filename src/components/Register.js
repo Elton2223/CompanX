@@ -17,8 +17,7 @@ export const Register = () => {
     const registerUser = () => {
       const dept = department; 
 
-      console.log("First Name : " + firstName + " Surname : "+ surname + " email: " + email + " Password: " + password);
-
+      // API request to register a user in companX's system
       fetch(`http://localhost:8000/User/Register`, {
             method: "post", 
             headers: {
@@ -37,7 +36,7 @@ export const Register = () => {
           navigate("/Login");
       })
       .catch(error => {
-        alert.alert("Error connecting to DB");
+        alert("Error connecting to DB"); //error handling 
       })
 
     }
@@ -50,7 +49,6 @@ export const Register = () => {
   
     return (
       <div className="signup-container">
-        {/* noValidate onSubmit={onSubmit}  */}
         <form className="signup-form" onSubmit={handleSubmit}>
           <h1 className="form-title">Create Account</h1>
   
@@ -128,9 +126,7 @@ export const Register = () => {
                 />
               </div>
             </div>
-  
-            {/*error && <div className="error-message">{error}</div>*/}
-  
+    
             <button type="submit" className="submit-button">
               {loading ? "Loading..." : "Sign Up"}
             </button>
