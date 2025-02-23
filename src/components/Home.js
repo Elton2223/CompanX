@@ -15,6 +15,43 @@ export const Home = () => {
   const [assignees, setAssignees] = useState([]);
   const [currentUser, setCurrentUser] = useState(null);
   const navigate = useNavigate();
+  
+  const [task_ref, setTaskref] = useState(null);
+  const [short_desc, setShortdesc] = useState(null);
+  const [category, setCategory] = useState(null);
+  const [assignee, setAssignee] = useState(null);
+  const [time_spent, setTimespent] = useState(null);
+  const [status, setStatus] = useState(null);
+  const [due_date, setDuedate] = useState(null);
+
+  //create a task 
+  const handleCreateTask = () =>{
+    fetch("http://localhost:8000/task/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body:JSON.stringify({
+          task_ref, 
+          short_desc, 
+          category,
+          assignee,
+          time_spent, 
+          status, 
+          due_date 
+        })
+    })
+    .then((res) => res.json())
+    .then((data) => {
+
+      if(data)
+      {
+        alert("Task Created");
+      }
+      
+    })
+  }
+
 
   //manipulate the cookie effects 
   const [cookies, removeCookie] = useCookies(["myToken"]);
@@ -33,26 +70,6 @@ export const Home = () => {
     navigate("/");
   }
 
-  const [newTask, setNewTask] = useState({
-    task_ref: "",
-    short_desc: "",
-    category: "Project",
-    assignee: "",
-    time_spent: 0,
-    status: "unassigned",
-    due_date: "",
-  });
-
-
-  /* // Check if the user is logged in when component mounts
-  useEffect(() => {
-    const token = localStorage.getItem("authToken") || sessionStorage.getItem("authToken");
-    if (!token) {
-      navigate("/"); // Redirect to login page if not authenticated
-    }
-  }, [navigate]); */
-
-
   return (
     <div className="container">
       <div className="content">
@@ -65,17 +82,16 @@ export const Home = () => {
             Logout
           </button>
         </div>
-        {/**  onSubmit={handleCreateTask} */}
-        <form className="task-form">
+        <form className="task-form" onSubmit={handleCreateTask}>
           <div className="form-grid">
             <div>
               <input
                 type="text"
                 name="task_ref"
                 placeholder="Task Reference (e.g. MD00133)"
-                value={newTask.task_ref}
+                value={task_ref}
                 onChange={(e) =>
-                  setNewTask({ ...newTask, task_ref: e.target.value })
+                  setTaskref(e.target.value )
                 }
                 className="form-input"
                 required
@@ -86,9 +102,9 @@ export const Home = () => {
             <div>
               <select
                 name="category"
-                value={newTask.category}
+                value={category}
                 onChange={(e) =>
-                  setNewTask({ ...newTask, category: e.target.value })
+                  setCategory(e.target.value)
                 }
                 className="form-select"
                 required
@@ -104,9 +120,9 @@ export const Home = () => {
                 type="text"
                 name="short_desc"
                 placeholder="Short Description"
-                value={newTask.short_desc}
+                value={short_desc}
                 onChange={(e) =>
-                  setNewTask({ ...newTask, short_desc: e.target.value })
+                  setShortdesc(e.target.value)
                 }
                 className="form-input"
                 required
@@ -115,9 +131,9 @@ export const Home = () => {
             <div>
               <select
                 name="assignee"
-                value={newTask.assignee}
+                value={assignee}
                 onChange={(e) =>
-                  setNewTask({ ...newTask, assignee: e.target.value })
+                  setAssignee(e.target.value)
                 }
                 className="form-select"
               >
@@ -134,10 +150,9 @@ export const Home = () => {
                 type="number"
                 name="time_spent"
                 placeholder="Time Spent (minutes)"
-                value={newTask.time_spent}
+                value={time_spent}
                 onChange={(e) =>
-                  setNewTask({
-                    ...newTask,
+                  setTimespent({
                     time_spent: Math.max(0, parseInt(e.target.value) || 0),
                   })
                 }
@@ -148,9 +163,9 @@ export const Home = () => {
             <div>
               <select
                 name="status"
-                value={newTask.status}
+                value={status}
                 onChange={(e) =>
-                  setNewTask({ ...newTask, status: e.target.value })
+                  setStatus(e.target.value)
                 }
                 className="form-select"
                 required
@@ -165,9 +180,9 @@ export const Home = () => {
               <input
                 type="date"
                 name="due_date"
-                value={newTask.due_date}
+                value={due_date}
                 onChange={(e) =>
-                  setNewTask({ ...newTask, due_date: e.target.value })
+                  setDuedate(e.target.value)
                 }
                 className="form-input"
               />
@@ -265,7 +280,7 @@ export const Home = () => {
                   type="text"
                   value={editingTask.task_ref}
                   onChange={(e) =>
-                    setEditingTask({ ...editingTask, task_ref: e.target.value })
+                    setEditingTask(e.target.value)
                   }
                   className="form-input"
                   placeholder="Task Reference"
@@ -277,10 +292,7 @@ export const Home = () => {
                   type="text"
                   value={editingTask.short_desc}
                   onChange={(e) =>
-                    setEditingTask({
-                      ...editingTask,
-                      short_desc: e.target.value,
-                    })
+                    setEditingTask(e.target.value)
                   }
                   className="form-input"
                   placeholder="Short Description"
@@ -289,7 +301,7 @@ export const Home = () => {
                 <select
                   value={editingTask.category}
                   onChange={(e) =>
-                    setEditingTask({ ...editingTask, category: e.target.value })
+                    setEditingTask(e.target.value)
                   }
                   className="form-select"
                   required
@@ -302,7 +314,7 @@ export const Home = () => {
                 <select
                   value={editingTask.assignee}
                   onChange={(e) =>
-                    setEditingTask({ ...editingTask, assignee: e.target.value })
+                    setEditingTask(e.target.value)
                   }
                   className="form-select"
                 >
@@ -318,8 +330,7 @@ export const Home = () => {
                   value={editingTask.time_spent}
                   onChange={(e) =>
                     setEditingTask({
-                      ...editingTask,
-                      time_spent: Math.max(0, parseInt(e.target.value) || 0),
+                      time_spent: Math.max(0, parseInt(e.target.value) || 0)
                     })
                   }
                   className="form-input"
@@ -329,7 +340,7 @@ export const Home = () => {
                 <select
                   value={editingTask.status}
                   onChange={(e) =>
-                    setEditingTask({ ...editingTask, status: e.target.value })
+                    setEditingTask(e.target.value)
                   }
                   className="form-select"
                   required
@@ -343,7 +354,7 @@ export const Home = () => {
                   type="date"
                   value={editingTask.due_date?.split("T")[0]}
                   onChange={(e) =>
-                    setEditingTask({ ...editingTask, due_date: e.target.value })
+                    setEditingTask(e.target.value)
                   }
                   className="form-input"
                 />
